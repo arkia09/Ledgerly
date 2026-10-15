@@ -1,8 +1,0 @@
-{
-  "page_type": "neat",
-  "source": "handwritten",
-  "rows": [
-    {"date": "12/10", "name": "Ramesh", "item": "atta 5kg", "amount": 240, "type": "credit", "struck_out": false},
-    {"date": "13/10", "name": "Ramesh", "item": null, "amount": 100, "type": "payment", "struck_out": false}
-  ]
-}
