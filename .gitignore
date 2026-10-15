@@ -6,3 +6,5 @@ db.sqlite3
 # Real shop pages are customer data: never commit them
 data/pages/
 data/outputs/
+OllamaSetup.exe
+data/
