@@ -1,0 +1,7 @@
+ollama>=0.5
+pydantic>=2.7
+pillow>=10.0
+rapidfuzz>=3.6
+# Added in Step 2:
+# django>=5.0
+# matplotlib>=3.8

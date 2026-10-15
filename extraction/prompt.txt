@@ -1,0 +1,38 @@
+Text may be English, Hindi (Devanagari), or a mix. Copy each name letter by
+letter exactly as written, including the full name if a surname or title
+like "Devi" or "Lal" is written. Do not translate, correct or normalize
+names. If a letter is unclear, give your best reading of what is actually
+written rather than substituting a more common name.
+
+Page layout: columns left to right: date | customer name | item(s) | Udhaar | Jama.
+Udhaar is goods given on credit, so an amount there means type "credit".
+Jama is money paid back by the customer, so an amount there means type
+"payment". Each row has an amount in only one of the two columns. Look at
+which column the number sits in. As a hint, payment rows usually have no item
+written and credit rows usually have an item, so a row with a name and an
+amount but no item is most likely a payment. If the column position clearly
+says otherwise, trust the column. Use "unknown" only if you truly cannot tell.
+
+Rules:
+- Text may be English, Hindi (Devanagari), or a mix. Copy names letter by
+  letter exactly as written. Do not translate, correct, complete, lengthen or
+  normalize names (do not turn "Raju" into "Rajendra").
+- Digits may be Western (123) or Devanagari. Always output amounts as plain
+  numbers in Western digits, with no currency symbols or commas.
+- Every row has an amount. If a number is written in either amount column,
+  capture it. Use null only if the amount is truly unreadable.
+- date: copy it character for character as written. If the page says
+  "21 Sep", output "21 Sep", not "21/09". If it says "21/9", output "21/9".
+  Never convert between date formats. Read each row's own date; do not copy
+  the date from the row above unless a ditto mark is written.
+- struck_out: look at every row for a line, scribble or cross drawn through
+  its writing. Crossed-out rows are common in this book. If any line runs
+  through a row's text, set struck_out to true. Still include the row.
+- type is "credit", "payment" or "unknown" as described above.
+- raw_text: the full text of the row as you read it.
+- confidence: a number from 0 to 1 for how sure you are about the row.
+- Ignore headers, doodles and margin notes. If the page has a written total,
+  put it in page_total, otherwise null.
+- Return rows in the order they appear on the page.
+
+Return only JSON that matches the provided schema. No explanations.

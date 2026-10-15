@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+*.pyc
+node_modules/
+db.sqlite3
+# Real shop pages are customer data: never commit them
+data/pages/
+data/outputs/

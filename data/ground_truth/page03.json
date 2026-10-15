@@ -1,0 +1,87 @@
+{
+  "page_type": "messy",
+  "source": "handwritten",
+  "writing_note": "Messy: write fast, slanted lines, uneven columns. Row 5 (Dinesh, 260): write it, then cross it out with a line and rewrite it correctly as row 6. Write the dates exactly as shown (some are '21 Sep' style).",
+  "rows": [
+    {
+      "date": "20/09",
+      "name": "Dinesh",
+      "item": "chawal 5kg",
+      "amount": 325,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "20/09",
+      "name": "Seema",
+      "item": "atta 5kg",
+      "amount": 245,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "20/09",
+      "name": "Babulal",
+      "item": null,
+      "amount": 150,
+      "type": "payment",
+      "struck_out": false
+    },
+    {
+      "date": "21/09",
+      "name": "Lakshmi",
+      "item": "chai patti",
+      "amount": 110,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "21 Sep",
+      "name": "Dinesh",
+      "item": "dal, tel",
+      "amount": 260,
+      "type": "credit",
+      "struck_out": true
+    },
+    {
+      "date": "21 Sep",
+      "name": "Dinesh",
+      "item": "dal, tel",
+      "amount": 265,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "22 Sep",
+      "name": "Imran",
+      "item": "sabun",
+      "amount": 45,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "22 Sep",
+      "name": "Seema",
+      "item": null,
+      "amount": 245,
+      "type": "payment",
+      "struck_out": false
+    },
+    {
+      "date": "23 Sep",
+      "name": "Kiran",
+      "item": "biscuit, maggi",
+      "amount": 95,
+      "type": "credit",
+      "struck_out": false
+    },
+    {
+      "date": "23 Sep",
+      "name": "Babulal",
+      "item": "sugar 1kg",
+      "amount": 48,
+      "type": "credit",
+      "struck_out": false
+    }
+  ]
+}
