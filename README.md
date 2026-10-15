@@ -1,4 +1,4 @@
-# Khata AI
+# Ledgerly
 
 Photograph a page of a paper credit ledger. A local Gemma model (via Ollama)
 reads it, you correct mistakes, and the app reports who owes what and for how long.
