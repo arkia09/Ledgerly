@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 
 from django.http import HttpResponse
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
@@ -15,7 +16,7 @@ from .ledger import running_balances
 from .matching import suggest_customer
 from .models import Correction, Customer, Entry, Page
 from .rules import build_rules
-from .util import error, iso, jr, num, read_json
+from .util import error, iso, jr, num, read_json, to_decimal
 
 log = logging.getLogger(__name__)
 
@@ -130,6 +131,99 @@ def page_confirm(request, pk):
     except ConfirmError as e:
         return error(str(e), e.status, details=e.details)
     return jr(result, 201)
+
+
+# ---------- customers and manual ledger entries ----------
+
+@csrf_exempt
+@require_POST
+def customer_create(request):
+    try:
+        body = read_json(request)
+    except (ValueError, UnicodeDecodeError):
+        return error("Body must be valid JSON.")
+    name = " ".join(str(body.get("name", "")).split()) if isinstance(body, dict) else ""
+    if not name:
+        return error("Customer name is required.")
+    if len(name) > 200:
+        return error("Customer name must be 200 characters or fewer.")
+    try:
+        customer = Customer.objects.create(name=name)
+    except IntegrityError:
+        return error("A customer with this name already exists (ignoring case and extra spaces).", 409)
+    return jr({"id": customer.id, "name": customer.name, "balance": 0,
+               "last_activity": None, "oldest_unpaid_days": None}, 201)
+
+
+@csrf_exempt
+@require_POST
+def customer_sale(request, pk):
+    customer = Customer.objects.filter(pk=pk).first()
+    if customer is None:
+        return error("Customer not found.", 404)
+    try:
+        body = read_json(request)
+    except (ValueError, UnicodeDecodeError):
+        return error("Body must be valid JSON.")
+    if not isinstance(body, dict):
+        return error("Body must be a JSON object.")
+
+    item = " ".join(str(body.get("item", "")).split())
+    date_text = " ".join(str(body.get("date_text", "")).split())
+    total = to_decimal(body.get("total_amount"))
+    paid = to_decimal(body.get("paid_amount", "0"))
+    # A zero payment is valid for a fully-credit sale. to_decimal intentionally rejects zero.
+    if str(body.get("paid_amount", "0")).strip() in ("0", "0.0", "0.00", ""):
+        from decimal import Decimal
+        paid = Decimal("0.00")
+    if total is None:
+        return error("Total amount must be greater than zero and a valid monetary amount.")
+    if paid is None or paid < 0 or paid > total:
+        return error("Amount paid must be between zero and the total amount.")
+    if len(item) > 200:
+        return error("Item description must be 200 characters or fewer.")
+    parsed_date = parse_date_text(date_text) if date_text else timezone.localdate()
+    if date_text and parsed_date is None:
+        return error("Date could not be parsed. Use a date such as 12/10 or 21 Sep.")
+
+    with transaction.atomic():
+        credit = Entry.objects.create(customer=customer, date=parsed_date,
+            date_text=date_text or parsed_date.strftime("%d/%m/%Y"), item=item or None,
+            amount=total, type=Entry.CREDIT)
+        payment = None
+        if paid > 0:
+            payment = Entry.objects.create(customer=customer, date=parsed_date,
+                date_text=date_text or parsed_date.strftime("%d/%m/%Y"), item="Payment for sale",
+                amount=paid, type=Entry.PAYMENT)
+    return jr({"customer_id": customer.id, "entries_created": 1 + int(payment is not None),
+               "credit_entry_id": credit.id, "payment_entry_id": payment.id if payment else None,
+               "total_amount": num(total), "paid_amount": num(paid),
+               "remaining_due": num(total - paid)}, 201)
+
+
+@csrf_exempt
+@require_POST
+def customer_payment(request, pk):
+    customer = Customer.objects.filter(pk=pk).first()
+    if customer is None:
+        return error("Customer not found.", 404)
+    try:
+        body = read_json(request)
+    except (ValueError, UnicodeDecodeError):
+        return error("Body must be valid JSON.")
+    if not isinstance(body, dict):
+        return error("Body must be a JSON object.")
+    amount = to_decimal(body.get("amount"))
+    if amount is None:
+        return error("Payment amount must be greater than zero.")
+    date_text = " ".join(str(body.get("date_text", "")).split())
+    parsed_date = parse_date_text(date_text) if date_text else timezone.localdate()
+    if date_text and parsed_date is None:
+        return error("Date could not be parsed. Use a date such as 12/10 or 21 Sep.")
+    entry = Entry.objects.create(customer=customer, date=parsed_date,
+        date_text=date_text or parsed_date.strftime("%d/%m/%Y"),
+        item="Payment received", amount=amount, type=Entry.PAYMENT)
+    return jr({"entry_id": entry.id, "amount": num(amount)}, 201)
 
 
 # ---------- customers ----------

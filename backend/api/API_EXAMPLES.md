@@ -44,3 +44,25 @@ A second confirm of the same page returns HTTP 409.
 ## Same calls with Invoke-RestMethod (no curl needed)
     Invoke-RestMethod http://localhost:8000/api/customers/
     Invoke-RestMethod -Method Post -ContentType "application/json" -InFile body.json http://localhost:8000/api/pages/1/confirm/
+
+## Add a customer manually
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8000/api/customers/create/ -H "Content-Type: application/json" -d "{\"name\":\"Priya Sharma\"}"
+```
+
+## Record a sale with full or partial payment
+
+The API records the total as a credit and, when `paid_amount` is greater than zero, records a payment in the same transaction. This means a ₹500 sale with ₹200 paid now leaves ₹300 outstanding.
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8000/api/customers/1/sales/ -H "Content-Type: application/json" -d "{\"item\":\"Rice and oil\",\"date_text\":\"2026-10-16\",\"total_amount\":\"500.00\",\"paid_amount\":\"200.00\"}"
+```
+
+Use `paid_amount` equal to `total_amount` for a fully paid sale, or `0` for full credit.
+
+## Record a later payment
+
+```powershell
+curl.exe -X POST http://127.0.0.1:8000/api/customers/1/payments/ -H "Content-Type: application/json" -d "{\"amount\":\"100.00\",\"date_text\":\"2026-10-17\"}"
+```

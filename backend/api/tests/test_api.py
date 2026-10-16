@@ -280,3 +280,41 @@ class CustomerModelTests(TempStorageTestCase):
         Customer.objects.create(name="Ramesh Kumar")
         with self.assertRaises(IntegrityError), transaction.atomic():
             Customer.objects.create(name="  ramesh   KUMAR ")
+
+
+class ManualCustomerEntryTests(TempStorageTestCase):
+    def test_create_customer_and_reject_duplicate_case_insensitively(self):
+        created = post_json(self.client, "/api/customers/create/", {"name": "  Priya   Sharma "})
+        self.assertEqual(created.status_code, 201)
+        self.assertEqual(created.json()["name"], "Priya Sharma")
+        duplicate = post_json(self.client, "/api/customers/create/", {"name": "priya sharma"})
+        self.assertEqual(duplicate.status_code, 409)
+
+    def test_sale_tracks_full_partial_and_zero_payment(self):
+        customer = Customer.objects.create(name="Manual customer")
+        sale = post_json(self.client, f"/api/customers/{customer.id}/sales/", {
+            "item": "Rice", "date_text": "2026-10-16", "total_amount": "500.00", "paid_amount": "200.00"
+        })
+        self.assertEqual(sale.status_code, 201)
+        self.assertEqual(sale.json()["remaining_due"], 300.0)
+        self.assertEqual(customer.entries.count(), 2)
+        full = post_json(self.client, f"/api/customers/{customer.id}/sales/", {
+            "item": "Oil", "date_text": "2026-10-16", "total_amount": "100", "paid_amount": "100"
+        })
+        self.assertEqual(full.status_code, 201)
+        unpaid = post_json(self.client, f"/api/customers/{customer.id}/sales/", {
+            "item": "Sugar", "date_text": "2026-10-16", "total_amount": "50", "paid_amount": "0"
+        })
+        self.assertEqual(unpaid.status_code, 201)
+        self.assertEqual(unpaid.json()["remaining_due"], 50.0)
+
+    def test_separate_payment_updates_balance(self):
+        customer = Customer.objects.create(name="Payment customer")
+        Entry.objects.create(customer=customer, amount=D("300.00"), type=Entry.CREDIT,
+                             date=timezone.localdate(), date_text="today", item="Groceries")
+        response = post_json(self.client, f"/api/customers/{customer.id}/payments/", {
+            "amount": "125.00", "date_text": timezone.localdate().isoformat()
+        })
+        self.assertEqual(response.status_code, 201)
+        detail = self.client.get(f"/api/customers/{customer.id}/").json()
+        self.assertEqual(detail["balance"], 175.0)

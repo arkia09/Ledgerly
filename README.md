@@ -147,3 +147,8 @@ npm run dev
 ```
 
 Open `http://127.0.0.1:5173`. Run the backend in a separate terminal from `backend/` with `python manage.py runserver 8000`. The Vite server is pinned to port 5173 to match Django CORS. See `frontend/README.md` for details.
+
+
+## Manual customer and transaction management
+
+Ledgerly supports creating customers and recording sales/payments directly in the UI. From Customers, select **Add customer**. Open a customer to record a sale, including the total amount and the amount paid now, or record a later payment separately. The balance and reports refresh after successful saves.
