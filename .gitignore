@@ -3,8 +3,11 @@ __pycache__/
 *.pyc
 node_modules/
 db.sqlite3
-# Real shop pages are customer data: never commit them
-data/pages/
-data/outputs/
+backend/media/
 OllamaSetup.exe
 data/
+backend/media/
+.env
+upload.json
+confirm.json
+
