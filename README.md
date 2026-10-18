@@ -5,8 +5,9 @@ reads it, you correct mistakes, and the app reports who owes what and for how lo
 
 ## Layout
 - `extraction/`   Step 1: model prompt, schema, single/batch runners, scoring
-- `backend/`      Step 2: Django API (empty for now)
-- `frontend/`     Step 3: React app (empty for now)
+- `backend/`      Step 2: Django API (SQLite, no login)
+- `frontend/`     Step 3: React + TypeScript app (Vite)
+- `finetune/`     Optional: fine-tune a vision model on Tinker and compare with the baseline (see its README)
 - `data/pages/`         test photos (gitignored: may contain customer data)
 - `data/ground_truth/`  your hand-written correct answers, one JSON per photo
 - `data/outputs/`       model outputs per run (gitignored)
@@ -26,6 +27,9 @@ reads it, you correct mistakes, and the app reports who owes what and for how lo
 5. Run them all:   `python batch.py`
 6. Score:          `python score.py --run gemma4_e4b`
 Compare prompts or models with `--run NAME` and `--model gemma4:e2b`.
+
+## Fine-tuning on Tinker (optional)
+See `extraction/ft/README.md`. Trains a Qwen3-VL model on your ledger pages and compares it with the untouched base model using `score.py`. Off by default; using it in the app sends photos to Tinker's cloud.
 
 ## Backend (Step 2: Django API)
 
@@ -62,7 +66,6 @@ frontend needs a long (or no) fetch timeout for the upload call.
 | GET | `/api/customers/<id>/` | One customer with entries and running balance |
 | GET | `/api/reports/balances/` | Who owes what (JSON) |
 | GET | `/api/reports/aging/` | Outstanding by age bucket (JSON) |
-| GET | `/api/reports/balances.png`, `/api/reports/aging.png` | Matplotlib charts |
 | GET | `/api/rules/` | Current "mistakes to avoid" list (debug/demo) |
 
 Money is a JSON number with 2 decimals. Dates are ISO strings. Errors are `{"error": "..."}`.
@@ -121,8 +124,7 @@ Rules for the confirm body:
 - Balance = credits minus payments, struck-out entries ignored. Aging applies payments to the
   oldest credits first (FIFO) and buckets what is left by age in days. Undated credits are paid
   last and reported as `unknown`.
-- Chart caveat: matplotlib cannot shape complex scripts, so some Devanagari names show vowel
-  signs in the wrong place in the PNGs. The JSON endpoints are exact.
+- Charts are drawn in the frontend from these JSON endpoints, so Devanagari names render correctly.
 
 ### How correction feedback works
 Every confirm compares your rows with the model's original output (kept untouched in
@@ -135,7 +137,7 @@ numerically. On the next upload the 5 most recent corrections become short plain
 
 ## Frontend (Ledgerly)
 
-The React + TypeScript + Vite app lives in `frontend/`. It uses a warm paper-and-brown theme and talks to the Django API at `http://127.0.0.1:8000/api` by default.
+The React + TypeScript + Vite app lives in `frontend/` (`api.ts`, `components/`, `views/`). It uses a warm paper theme with a 17px base font and talks to the Django API at `http://127.0.0.1:8000/api` by default.
 
 In PowerShell, from the repository root:
 

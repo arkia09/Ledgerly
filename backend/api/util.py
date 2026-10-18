@@ -30,15 +30,16 @@ def read_json(request):
     return json.loads(request.body.decode("utf-8-sig"))
 
 
-def to_decimal(value) -> Decimal | None:
-    """Parse a money value (number or string) to Decimal(12,2). None if invalid or <= 0."""
+def to_decimal(value, allow_zero=False) -> Decimal | None:
+    """Parse a money value (number or string) to Decimal(12,2). None if invalid, negative, or zero
+    (unless allow_zero)."""
     if isinstance(value, bool) or value is None:
         return None
     try:
         d = Decimal(str(value).strip().replace(",", ""))
     except InvalidOperation:
         return None
-    if not d.is_finite() or d <= 0:
+    if not d.is_finite() or d < 0 or (d == 0 and not allow_zero):
         return None
     d = d.quantize(TWO_PLACES, rounding=ROUND_HALF_UP)
     return d if d < Decimal("10000000000") else None

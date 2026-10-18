@@ -1,13 +1,37 @@
+# Python
 __pycache__/
+*.py[cod]
+*.egg-info/
 .venv/
-*.pyc
-node_modules/
+venv/
+.env
+.env.*
+
+# Django
 db.sqlite3
-backend/media/
+media/
+staticfiles/
+
+# Training artifacts and model files
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+
+# Generated TypeScript files
+frontend/tsconfig.tsbuildinfo
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Local datasets and generated training output
 OllamaSetup.exe
 data/
+data/
+datasets/
+checkpoints/
 backend/media/
-.env
 upload.json
 confirm.json
-

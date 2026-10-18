@@ -35,8 +35,6 @@ A second confirm of the same page returns HTTP 409.
 ## Reports
     curl.exe -s http://localhost:8000/api/reports/balances/
     curl.exe -s http://localhost:8000/api/reports/aging/
-    curl.exe -s -o balances.png http://localhost:8000/api/reports/balances.png
-    curl.exe -s -o aging.png http://localhost:8000/api/reports/aging.png
 
 ## Current "mistakes to avoid" rules
     curl.exe -s http://localhost:8000/api/rules/

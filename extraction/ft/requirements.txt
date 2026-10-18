@@ -1,0 +1,6 @@
+# Only needed for the Tinker fine-tuning pipeline (extraction/ft). Not needed to run the app.
+tinker
+tinker-cookbook
+pillow>=10.0
+pydantic>=2.7
+rapidfuzz>=3.6

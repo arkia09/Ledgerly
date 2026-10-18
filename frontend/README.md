@@ -1,6 +1,6 @@
 # Ledgerly frontend
 
-React + TypeScript + Vite frontend for the local Ledgerly Django API. Uses a warm paper-and-brown palette, responsive navigation, dashboard, customer ledger, upload/review flow and reports. No hosted font or analytics services are used.
+React + TypeScript + Vite frontend for the local Ledgerly Django API. Styled as a khata book: leather cover, ruled cream page, red margin line, double-ruled ledger columns. Fonts (Kalam and Source Serif 4) are bundled through npm, so nothing loads from Google. Dark mode follows the system. Also has responsive navigation, dashboard, customer ledger, upload/review flow and reports. No hosted font or analytics services are used.
 
 ## Requirements
 
@@ -32,7 +32,7 @@ Set `VITE_API_BASE_URL` in `.env` if the backend API uses another address. Resta
 - Overview cards and customers with outstanding balances.
 - Customer search and per-customer transaction history.
 - Image upload and editable extraction review table, including customer matching and struck-out rows.
-- Balance and aging reports using the backend PNG endpoints and JSON bucket totals.
+- Balance and aging reports drawn in the browser from the JSON endpoints.
 - Local/private status, warm paper styling, responsive layout and no external font dependency.
 
 The upload extraction call is synchronous and may take several minutes on CPU. Keep the tab open while it runs. The review form only creates ledger entries after confirmation.

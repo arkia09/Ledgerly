@@ -1,0 +1,6 @@
+# Only needed for fine-tuning. Keep this out of the app's requirements.txt.
+tinker
+tinker-cookbook
+pillow>=10.0
+pydantic>=2.7
+rapidfuzz>=3.6

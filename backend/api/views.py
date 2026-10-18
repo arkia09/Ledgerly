@@ -1,15 +1,13 @@
-import json
 import logging
 from pathlib import Path
 
-from django.http import HttpResponse
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from PIL import Image
 
-from . import charts, extractor, services
+from . import extractor, services
 from .confirm import ConfirmError, confirm_page, validate_rows
 from .dateparse import parse_date_text
 from .ledger import running_balances
@@ -85,9 +83,12 @@ def pages(request):
     except Exception as e:  # never swallow: record, log and report it
         log.exception("Extraction failed for page %s", page.id)
         raw = getattr(e, "raw", "")
-        if type(e).__name__ == "ExtractionError":
+        if type(e).__name__ in ("ExtractionError", "TinkerExtractionError"):
             message = ("The model's answer was not valid ledger JSON. Try again, "
                        "or enter the rows by hand. Raw output is included.")
+        elif extractor.backend_name() == "tinker":
+            message = (f"Extraction could not run: {e}. Check TINKER_API_KEY, your Tinker "
+                       "billing, and that ft/train.py has produced ft/last_model.json.")
         else:
             message = (f"Extraction could not run: {e}. Check that Ollama is running "
                        "('ollama list') and the model is pulled.")
@@ -135,6 +136,16 @@ def page_confirm(request, pk):
 
 # ---------- customers and manual ledger entries ----------
 
+def _clean_name(body):
+    """Normalised customer name from a JSON body, or (None, error response)."""
+    name = " ".join(str(body.get("name", "")).split()) if isinstance(body, dict) else ""
+    if not name:
+        return None, error("Customer name is required.")
+    if len(name) > 200:
+        return None, error("Customer name must be 200 characters or fewer.")
+    return name, None
+
+
 @csrf_exempt
 @require_POST
 def customer_create(request):
@@ -142,17 +153,53 @@ def customer_create(request):
         body = read_json(request)
     except (ValueError, UnicodeDecodeError):
         return error("Body must be valid JSON.")
-    name = " ".join(str(body.get("name", "")).split()) if isinstance(body, dict) else ""
-    if not name:
-        return error("Customer name is required.")
-    if len(name) > 200:
-        return error("Customer name must be 200 characters or fewer.")
+    name, err = _clean_name(body)
+    if err:
+        return err
     try:
         customer = Customer.objects.create(name=name)
     except IntegrityError:
         return error("A customer with this name already exists (ignoring case and extra spaces).", 409)
     return jr({"id": customer.id, "name": customer.name, "balance": 0,
                "last_activity": None, "oldest_unpaid_days": None}, 201)
+
+
+@csrf_exempt
+@require_POST
+def customer_update(request, pk):
+    customer = Customer.objects.filter(pk=pk).first()
+    if customer is None:
+        return error("Customer not found.", 404)
+    try:
+        body = read_json(request)
+    except (ValueError, UnicodeDecodeError):
+        return error("Body must be valid JSON.")
+    name, err = _clean_name(body)
+    if err:
+        return err
+    if Customer.objects.exclude(pk=customer.pk).filter(name__iexact=name).exists():
+        return error("A customer with this name already exists (ignoring case).", 409)
+    customer.name = name
+    try:
+        customer.save(update_fields=["name"])
+    except IntegrityError:
+        return error("A customer with this name already exists.", 409)
+    return jr({"id": customer.id, "name": customer.name})
+
+
+@csrf_exempt
+@require_POST
+def customer_delete(request, pk):
+    """Delete a customer and all of their entries. Pages and corrections are kept, so the
+    training data you built by confirming pages is not affected."""
+    customer = Customer.objects.filter(pk=pk).first()
+    if customer is None:
+        return error("Customer not found.", 404)
+    with transaction.atomic():
+        entries = customer.entries.count()
+        name = customer.name
+        customer.delete()
+    return jr({"deleted": pk, "name": name, "entries_deleted": entries})
 
 
 @csrf_exempt
@@ -171,14 +218,10 @@ def customer_sale(request, pk):
     item = " ".join(str(body.get("item", "")).split())
     date_text = " ".join(str(body.get("date_text", "")).split())
     total = to_decimal(body.get("total_amount"))
-    paid = to_decimal(body.get("paid_amount", "0"))
-    # A zero payment is valid for a fully-credit sale. to_decimal intentionally rejects zero.
-    if str(body.get("paid_amount", "0")).strip() in ("0", "0.0", "0.00", ""):
-        from decimal import Decimal
-        paid = Decimal("0.00")
+    paid = to_decimal(body.get("paid_amount") or "0", allow_zero=True)   # 0 = fully on credit
     if total is None:
         return error("Total amount must be greater than zero and a valid monetary amount.")
-    if paid is None or paid < 0 or paid > total:
+    if paid is None or paid > total:
         return error("Amount paid must be between zero and the total amount.")
     if len(item) > 200:
         return error("Item description must be 200 characters or fewer.")
@@ -274,22 +317,6 @@ def _aging_json(r):
 @require_GET
 def report_aging(request):
     return jr(_aging_json(services.aging_report()))
-
-
-def _png(data: bytes) -> HttpResponse:
-    resp = HttpResponse(data, content_type="image/png")
-    resp["Cache-Control"] = "no-store"
-    return resp
-
-
-@require_GET
-def report_balances_png(request):
-    return _png(charts.balances_png(services.balances_report()["customers"]))
-
-
-@require_GET
-def report_aging_png(request):
-    return _png(charts.aging_png(services.aging_report()))
 
 
 # ---------- debug helper ----------

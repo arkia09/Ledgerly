@@ -60,14 +60,17 @@ def match_rows(gt_rows, pr_rows):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", required=True)
+    ap.add_argument("--pages", default=None,
+                    help="comma-separated page stems to score (default: every page with ground truth)")
     ap.add_argument("--details", action="store_true",
                     help="print every wrong field: what you wrote vs what the model said")
     args = ap.parse_args()
 
+    only = set(args.pages.split(",")) if args.pages else None
     stats = defaultdict(lambda: defaultdict(int))
     times = []
     for gt_file in sorted(GT_DIR.glob("*.json")):
-        if gt_file.name.startswith("_"):
+        if gt_file.name.startswith("_") or (only and gt_file.stem not in only):
             continue
         out_file = OUT_DIR / args.run / gt_file.name
         if not out_file.exists():

@@ -44,10 +44,28 @@ def _fake_extract(original_name: str):
     return record["page"], float(record.get("seconds") or 0.0), f"fake:{chosen.stem}"
 
 
+def backend_name() -> str:
+    """'ollama' (default, photos stay on this computer) or 'tinker' (opt-in, photos are sent to
+    Tinker's cloud to be read by your fine-tuned model)."""
+    return os.environ.get("LEDGERLY_EXTRACTOR", "ollama").strip().lower()
+
+
+def _tinker_extract(image_path: str, rules: list[str]):
+    ft = str(settings.LEDGERLY_EXTRACTION_DIR / "ft")
+    if ft not in sys.path:
+        sys.path.insert(0, ft)
+    import sampler
+    from ftcommon import load_model_info
+    page, seconds = sampler.extract(image_path, finetuned=True, extra_rules=rules or None)
+    return page.model_dump(), seconds, f"tinker:{load_model_info()['base_model']}"
+
+
 def run_extraction(image_path: str, original_name: str, rules: list[str]):
     """Returns (page_dict, seconds, model_name). Raises on any failure; callers must not hide it."""
     if fake_mode():
         return _fake_extract(original_name)
+    if backend_name() == "tinker":
+        return _tinker_extract(image_path, rules)
     mod = load()
     page, seconds = mod.extract(image_path, extra_rules=rules or None)
     return page.model_dump(), seconds, mod.MODEL

@@ -258,18 +258,8 @@ class CustomerAndReportTests(TempStorageTestCase):
         self.assertEqual(set(a["customers"][0]), {"id", "name", "0-30", "31-60", "61+", "unknown", "total"})
         self.assertEqual(a["customers"][0]["total"], 280.0)
 
-    def test_png_endpoints_with_data(self):
-        for u in ("/api/reports/balances.png", "/api/reports/aging.png"):
-            r = self.client.get(u)
-            self.assertEqual((r.status_code, r["Content-Type"]), (200, "image/png"))
-            self.assertTrue(r.content.startswith(b"\x89PNG"))
-
-    def test_png_endpoints_empty_database(self):
+    def test_reports_empty_database(self):
         Customer.objects.all().delete()
-        for u in ("/api/reports/balances.png", "/api/reports/aging.png"):
-            r = self.client.get(u)
-            self.assertEqual(r.status_code, 200)
-            self.assertTrue(r.content.startswith(b"\x89PNG"))
         self.assertEqual(self.client.get("/api/reports/balances/").json(),
                          {"total_outstanding": 0.0, "customers": []})
 
@@ -308,6 +298,30 @@ class ManualCustomerEntryTests(TempStorageTestCase):
         self.assertEqual(unpaid.status_code, 201)
         self.assertEqual(unpaid.json()["remaining_due"], 50.0)
 
+    def test_delete_customer_removes_entries_but_keeps_pages_and_corrections(self):
+        page = Page.objects.create(status=Page.CONFIRMED)
+        Correction.objects.create(page=page, row_index=0, field="name", model_value="Ramsh", user_value="Ramesh")
+        gone = Customer.objects.create(name="Delete me")
+        keep = Customer.objects.create(name="Keep me")
+        for c in (gone, keep):
+            Entry.objects.create(customer=c, page=page, amount=D("90.00"), type=Entry.CREDIT, item="tea")
+        Entry.objects.create(customer=gone, amount=D("40.00"), type=Entry.PAYMENT)
+        resp = post_json(self.client, f"/api/customers/{gone.id}/delete/", {})
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json()["entries_deleted"], 2)
+        self.assertFalse(Customer.objects.filter(pk=gone.id).exists())
+        self.assertEqual(Entry.objects.filter(customer=gone).count(), 0)
+        self.assertEqual(Entry.objects.filter(customer=keep).count(), 1)     # other customer untouched
+        self.assertTrue(Page.objects.filter(pk=page.pk).exists())            # page kept
+        self.assertEqual(Correction.objects.filter(page=page).count(), 1)    # training data kept
+        self.assertEqual(self.client.get(f"/api/customers/{gone.id}/").status_code, 404)
+
+    def test_delete_unknown_customer_is_404_and_get_is_rejected(self):
+        self.assertEqual(post_json(self.client, "/api/customers/99999/delete/", {}).status_code, 404)
+        c = Customer.objects.create(name="Still here")
+        self.assertEqual(self.client.get(f"/api/customers/{c.id}/delete/").status_code, 405)
+        self.assertTrue(Customer.objects.filter(pk=c.id).exists())
+
     def test_separate_payment_updates_balance(self):
         customer = Customer.objects.create(name="Payment customer")
         Entry.objects.create(customer=customer, amount=D("300.00"), type=Entry.CREDIT,
@@ -318,3 +332,18 @@ class ManualCustomerEntryTests(TempStorageTestCase):
         self.assertEqual(response.status_code, 201)
         detail = self.client.get(f"/api/customers/{customer.id}/").json()
         self.assertEqual(detail["balance"], 175.0)
+
+
+class ExtractorBackendTests(TempStorageTestCase):
+    def test_tinker_backend_is_opt_in_and_dispatches(self):
+        import os
+        from unittest import mock
+        from api import extractor
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("LEDGERLY_EXTRACTOR", None)
+            os.environ.pop("LEDGERLY_FAKE_EXTRACT", None)
+            self.assertEqual(extractor.backend_name(), "ollama")   # local by default
+            os.environ["LEDGERLY_EXTRACTOR"] = "tinker"
+            with mock.patch.object(extractor, "_tinker_extract", return_value=({"rows": []}, 1.0, "tinker:x")) as m:
+                self.assertEqual(extractor.run_extraction("a.jpg", "a.jpg", ["r"])[2], "tinker:x")
+                m.assert_called_once_with("a.jpg", ["r"])
