@@ -1,0 +1,14 @@
+# Used only by the Render build. Local development keeps using requirements.txt.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
+django>=5.0,<6.0
+django-cors-headers>=4.3
+gunicorn>=22
+whitenoise>=6.6
+dj-database-url>=2.1
+psycopg[binary]>=3.1
+pydantic>=2.7
+pillow>=10.0
+rapidfuzz>=3.6
+tinker
+tinker-cookbook

@@ -26,7 +26,7 @@ if str(EXTRACTION) not in sys.path:
 from preprocess import load_image_bytes  # noqa: E402
 from schema import Page  # noqa: E402
 
-BASE_MODEL = os.environ.get("TINKER_BASE_MODEL", "Qwen/Qwen3-VL-30B-A3B-Instruct")
+BASE_MODEL = os.environ.get("TINKER_BASE_MODEL", "Qwen/Qwen3.6-35B-A3B")
 MAX_SIDE = int(os.environ.get("TINKER_MAX_SIDE", "1024"))   # fewer image tokens = cheaper
 MODEL_FILE = HERE / "last_model.json"                        # written by train.py
 

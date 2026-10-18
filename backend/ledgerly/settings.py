@@ -1,4 +1,4 @@
-"""Ledgerly backend settings. Local-only app: no login, no cloud, SQLite."""
+"""Ledgerly backend settings. Local by default (SQLite, DEBUG on). On Render the env vars below switch it to Postgres + production mode."""
 import os
 from pathlib import Path
 
@@ -7,7 +7,11 @@ PROJECT_ROOT = BASE_DIR.parent                         # repo root
 
 SECRET_KEY = os.environ.get("LEDGERLY_SECRET_KEY", "local-dev-only-not-a-secret")
 DEBUG = os.environ.get("LEDGERLY_DEBUG", "1") == "1"
+if not DEBUG and SECRET_KEY == "local-dev-only-not-a-secret":
+    raise RuntimeError("Set LEDGERLY_SECRET_KEY when LEDGERLY_DEBUG=0.")
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "[::1]"]
+if os.environ.get("RENDER_EXTERNAL_HOSTNAME"):          # set automatically by Render
+    ALLOWED_HOSTS.append(os.environ["RENDER_EXTERNAL_HOSTNAME"])
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -30,6 +34,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if not DEBUG:  # production only, so local development needs no extra package
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 ROOT_URLCONF = "ledgerly.urls"
 
@@ -56,6 +63,9 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+if os.environ.get("DATABASE_URL"):                       # Render: Postgres
+    import dj_database_url
+    DATABASES["default"] = dj_database_url.parse(os.environ["DATABASE_URL"], conn_max_age=600)
 
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "Asia/Kolkata"
@@ -64,11 +74,14 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = Path(os.environ.get("LEDGERLY_MEDIA_ROOT", BASE_DIR / "media"))   # Render: persistent disk
+STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # The React dev server (Vite). 127.0.0.1 is included because Vite sometimes binds to it.
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173", "http://127.0.0.1:5173"]
+# Hosted frontend address(es), comma separated, e.g. https://ledgerly-web.onrender.com (no trailing slash).
+CORS_ALLOWED_ORIGINS += [o.strip().rstrip("/") for o in os.environ.get("LEDGERLY_CORS_ORIGINS", "").split(",") if o.strip()]
 
 # ---- Ledgerly settings ----
 # Folder holding extract.py / schema.py / prompt.txt (flat imports, so it goes on sys.path).

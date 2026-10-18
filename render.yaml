@@ -1,0 +1,56 @@
+# Render Blueprint for Ledgerly: Django API + Postgres + static React site.
+# NO SECRETS LIVE IN THIS FILE. Values marked `sync: false` are typed into the Render dashboard.
+databases:
+  - name: ledgerly-db
+    plan: basic-256mb
+    databaseName: ledgerly
+    user: ledgerly
+
+services:
+  - type: web
+    name: ledgerly-api
+    runtime: python
+    plan: standard               # 2 GB RAM: loading the tokenizer/image processor needs more than Starter's 512 MB
+    rootDir: backend
+    buildCommand: pip install -r ../requirements-render.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && gunicorn ledgerly.wsgi:application --workers 1 --threads 4 --timeout 180 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/customers/
+    disk:
+      name: ledgerly-media
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: LEDGERLY_DEBUG
+        value: "0"
+      - key: LEDGERLY_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ledgerly-db
+          property: connectionString
+      - key: LEDGERLY_MEDIA_ROOT
+        value: /var/data/media
+      - key: LEDGERLY_EXTRACTOR
+        value: tinker
+      - key: TINKER_BASE_MODEL
+        value: Qwen/Qwen3.6-35B-A3B
+      - key: TINKER_API_KEY
+        sync: false               # paste in the dashboard, never here
+      - key: LEDGERLY_CORS_ORIGINS
+        sync: false               # your static site URL, filled in after the first deploy
+
+  - type: web
+    name: ledgerly-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false               # https://<your-api>.onrender.com/api, filled in after the first deploy
