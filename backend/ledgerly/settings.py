@@ -87,7 +87,7 @@ CORS_ALLOWED_ORIGINS += [o.strip().rstrip("/") for o in os.environ.get("LEDGERLY
 # Folder holding extract.py / schema.py / prompt.txt (flat imports, so it goes on sys.path).
 LEDGERLY_EXTRACTION_DIR = PROJECT_ROOT / "extraction"
 # Saved model output used when LEDGERLY_FAKE_EXTRACT=1.
-LEDGERLY_FAKE_OUTPUT_DIR = PROJECT_ROOT / "data" / "outputs" / "v3"
+LEDGERLY_FAKE_OUTPUT_DIR = PROJECT_ROOT / os.environ.get("LEDGERLY_FAKE_OUTPUT_DIR", "data/outputs/v3")
 # Used only by `manage.py load_demo`.
 LEDGERLY_GROUND_TRUTH_DIR = PROJECT_ROOT / "data" / "ground_truth"
 LEDGERLY_PAGE_IMAGES_DIR = PROJECT_ROOT / "data" / "pages"

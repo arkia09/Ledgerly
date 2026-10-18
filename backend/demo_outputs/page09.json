@@ -1,0 +1,109 @@
+{
+  "model": "tinker_ft",
+  "seconds": 12.576610000000073,
+  "page": {
+    "rows": [
+      {
+        "raw_text": "25/6 Seema Atta 5kg 245",
+        "date": "25/6",
+        "name": "Seema",
+        "item": "Atta 5kg",
+        "amount": 245.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "25/6 Dinesh Chawal 5kg 325",
+        "date": "25/6",
+        "name": "Dinesh",
+        "item": "Chawal 5kg",
+        "amount": 325.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "26/6 Babulal 150",
+        "date": "26/6",
+        "name": "Babulal",
+        "item": null,
+        "amount": 150.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "26/6 Lakshmi Chai patti 110",
+        "date": "26/6",
+        "name": "Lakshmi",
+        "item": "Chai patti",
+        "amount": 110.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "27/6 Kiran Biscuit, maggi 95",
+        "date": "27/6",
+        "name": "Kiran",
+        "item": "Biscuit, maggi",
+        "amount": 95.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "27/6 Dinesh Dal, tel 265",
+        "date": "27/6",
+        "name": "Dinesh",
+        "item": "Dal, tel",
+        "amount": 265.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "28/6 Imran Sabun 45",
+        "date": "28/6",
+        "name": "Imran",
+        "item": "Sabun",
+        "amount": 45.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "28/6 Seema 245",
+        "date": "28/6",
+        "name": "Seema",
+        "item": null,
+        "amount": 245.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "29/6 Babulal Sugar 1kg 48",
+        "date": "29/6",
+        "name": "Babulal",
+        "item": "Sugar 1kg",
+        "amount": 48.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "29/6 Kiran 60",
+        "date": "29/6",
+        "name": "Kiran",
+        "item": null,
+        "amount": 60.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      }
+    ],
+    "page_total": null
+  }
+}

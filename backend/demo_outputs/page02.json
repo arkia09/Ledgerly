@@ -1,0 +1,109 @@
+{
+  "model": "tinker_ft",
+  "seconds": 12.954414399999223,
+  "page": {
+    "rows": [
+      {
+        "raw_text": "07/10 Harish Atta 10 kg 480",
+        "date": "07/10",
+        "name": "Harish",
+        "item": "Atta 10 kg",
+        "amount": 480.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "07/10 Kamla Devi Milk 60",
+        "date": "07/10",
+        "name": "Kamla Devi",
+        "item": "Milk",
+        "amount": 60.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "08/10 Anil Sharma 300",
+        "date": "08/10",
+        "name": "Anil Sharma",
+        "item": null,
+        "amount": 300.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "08/10 Vikram Salt, masala 75",
+        "date": "08/10",
+        "name": "Vikram",
+        "item": "Salt, masala",
+        "amount": 75.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "09/10 Geeta 120",
+        "date": "09/10",
+        "name": "Geeta",
+        "item": null,
+        "amount": 120.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "09/10 Raju Oil 1L 170",
+        "date": "09/10",
+        "name": "Raju",
+        "item": "Oil 1L",
+        "amount": 170.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "10/10 Harish 200",
+        "date": "10/10",
+        "name": "Harish",
+        "item": null,
+        "amount": 200.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "10/10 Sunita Devi Atta 5 kg 240",
+        "date": "10/10",
+        "name": "Sunita Devi",
+        "item": "Atta 5 kg",
+        "amount": 240.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "11/10 Pooja 210",
+        "date": "11/10",
+        "name": "Pooja",
+        "item": null,
+        "amount": 210.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "11/10 Vikram Bread, butter 85",
+        "date": "11/10",
+        "name": "Vikram",
+        "item": "Bread, butter",
+        "amount": 85.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      }
+    ],
+    "page_total": null
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "model": "tinker_ft",
+  "seconds": 11.873410700001841,
+  "page": {
+    "rows": [
+      {
+        "raw_text": "25/09 Pappu atta 5kg 250",
+        "date": "25/09",
+        "name": "Pappu",
+        "item": "atta 5kg",
+        "amount": 250.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "25/09 Rekha ghee 500g 310",
+        "date": "25/09",
+        "name": "Rekha",
+        "item": "ghee 500g",
+        "amount": 310.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "26/09 Sanjay 500",
+        "date": "26/09",
+        "name": "Sanjay",
+        "item": null,
+        "amount": 500.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "26/09 Lakshmi 110",
+        "date": "26/09",
+        "name": "Lakshmi",
+        "item": null,
+        "amount": 110.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "26/09 Farhan namak 20",
+        "date": "26/09",
+        "name": "Farhan",
+        "item": "namak",
+        "amount": 20.0,
+        "type": "credit",
+        "struck_out": true,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "27/09 Pappu 100",
+        "date": "27/09",
+        "name": "Pappu",
+        "item": null,
+        "amount": 100.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "27/09 Rekha haldi, mirch 85",
+        "date": "27/09",
+        "name": "Rekha",
+        "item": "haldi, mirch",
+        "amount": 85.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "28/09 Sanjay cheeni 3kg 135",
+        "date": "28/09",
+        "name": "Sanjay",
+        "item": "cheeni 3kg",
+        "amount": 135.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "28/09 Nitin 40",
+        "date": "28/09",
+        "name": "Nitin",
+        "item": null,
+        "amount": 40.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "28/09 Farhan rice 5kg 300",
+        "date": "28/09",
+        "name": "Farhan",
+        "item": "rice 5kg",
+        "amount": 300.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      }
+    ],
+    "page_total": null
+  }
+}

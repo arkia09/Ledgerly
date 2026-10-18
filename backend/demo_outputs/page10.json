@@ -1,0 +1,99 @@
+{
+  "model": "tinker_ft",
+  "seconds": 11.916350700001203,
+  "page": {
+    "rows": [
+      {
+        "raw_text": "30/6 Pappu Atta (5 kg) 250",
+        "date": "30/6",
+        "name": "Pappu",
+        "item": "Atta (5 kg)",
+        "amount": 250.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "30/6 Rekha Ghee 500 g 310",
+        "date": "30/6",
+        "name": "Rekha",
+        "item": "Ghee 500 g",
+        "amount": 310.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "31/6 Sanjay 500",
+        "date": "31/6",
+        "name": "Sanjay",
+        "item": null,
+        "amount": 500.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "01/7 Farhan Noodles 90",
+        "date": "01/7",
+        "name": "Farhan",
+        "item": "Noodles",
+        "amount": 90.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "01/7 Pappu 100",
+        "date": "01/7",
+        "name": "Pappu",
+        "item": null,
+        "amount": 100.0,
+        "type": "payment",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "02/7 Rekha Haldi, mirch 85",
+        "date": "02/7",
+        "name": "Rekha",
+        "item": "Haldi, mirch",
+        "amount": 85.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "02/7 Sanjay Cheeni 3 kg 135",
+        "date": "02/7",
+        "name": "Sanjay",
+        "item": "Cheeni 3 kg",
+        "amount": 135.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "03/7 Nihin 40",
+        "date": "03/7",
+        "name": "Nihin",
+        "item": null,
+        "amount": 40.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      },
+      {
+        "raw_text": "03/7 Farhan Rice 5 kg 300",
+        "date": "03/7",
+        "name": "Farhan",
+        "item": "Rice 5 kg",
+        "amount": 300.0,
+        "type": "credit",
+        "struck_out": false,
+        "confidence": 1.0
+      }
+    ],
+    "page_total": null
+  }
+}
