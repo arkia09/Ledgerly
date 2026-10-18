@@ -1,5 +1,4 @@
 # Render Blueprint for Ledgerly: Django API + Postgres + static React site.
-# NO SECRETS LIVE IN THIS FILE. Values marked `sync: false` are typed into the Render dashboard.
 databases:
   - name: ledgerly-db
     plan: basic-256mb
