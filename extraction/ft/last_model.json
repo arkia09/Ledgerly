@@ -1,0 +1,15 @@
+{
+  "model_path": "tinker://f9172ca6-5f14-54c5-8781-73909257b194:train:0/sampler_weights/ledgerly-ft",
+  "base_model": "Qwen/Qwen3.6-35B-A3B",
+  "renderer": "qwen3_5",
+  "epochs": 4,
+  "examples": 36,
+  "train_seconds": 256,
+  "held_out": [
+    "page02",
+    "page04",
+    "page06",
+    "page09",
+    "page10"
+  ]
+}
