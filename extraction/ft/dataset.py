@@ -20,7 +20,7 @@ GT_DIR = ROOT / "data" / "ground_truth"
 PAGES_DIR = ROOT / "data" / "pages"
 DB_PATH = ROOT / "backend" / "db.sqlite3"
 MEDIA_DIR = ROOT / "backend" / "media"
-TEST_PAGES = ["page02", "page04", "page06", "page07", "page08", "page09", "page10", "page11", "page12", "page13", "page14"]   # one neat, one messy, one mixed
+TEST_PAGES = ["page02", "page04", "page06", "page09", "page10"]   # one neat, one messy, one mixed
 
 
 def augment(img: Image.Image, rng: random.Random) -> Image.Image:

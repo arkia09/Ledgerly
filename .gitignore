@@ -35,3 +35,4 @@ checkpoints/
 backend/media/
 upload.json
 confirm.json
+last_model.json

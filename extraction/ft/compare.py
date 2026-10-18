@@ -36,8 +36,8 @@ DEFAULT_RUNS = ["gemma4_e4b", "tinker_base", "tinker_ft"]
 FALLBACK_PAGES = ["page02", "page04", "page06"]
 LABELS = {
     "gemma4_e4b": "Gemma 4 (local, Ollama)",
-    "tinker_base": "Qwen3-VL base (Tinker)",
-    "tinker_ft": "Qwen3-VL fine-tuned (Tinker)",
+    "tinker_base": "Qwen3.6 base (Tinker)",
+    "tinker_ft": "Qwen3.6 fine-tuned (Tinker)",
 }
 FIELDS = ("name", "amount", "date", "type", "struck")
 
