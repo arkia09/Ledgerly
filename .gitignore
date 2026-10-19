@@ -27,7 +27,6 @@ frontend/node_modules/
 frontend/dist/
 
 # Local datasets and generated training output
-OllamaSetup.exe
 data/
 data/
 datasets/
